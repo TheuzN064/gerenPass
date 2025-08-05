@@ -2,6 +2,99 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
+  <style>
+  /* Reset básico */
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #f5f7fa; /* cinza claro neutro */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0 20px;
+  }
+
+  h1, h2 {
+    color: #2c3e50;
+  }
+
+  input, button {
+    font-size: 1rem;
+    padding: 10px;
+    margin: 8px 4px 12px 0;
+    border: 1.8px solid #bdc3c7;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+
+  input:focus {
+    border-color: #2980b9;
+  }
+
+  button {
+    cursor: pointer;
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #1f6391;
+  }
+
+  ul {
+    padding-left: 0;
+    list-style: none;
+  }
+
+  li {
+    background: white;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgb(0 0 0 / 0.1);
+  }
+
+  .input-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .input-group input {
+    flex: 1 1 auto;
+  }
+
+  @media (max-width: 480px) {
+    .container {
+      padding: 20px;
+      margin: 20px 10px;
+    }
+    button, input {
+      width: 100%;
+      margin: 6px 0;
+    }
+    .input-group {
+      flex-direction: column;
+    }
+  }
+</style>
+
   <title>Login</title>
 </head>
 <body>
