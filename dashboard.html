@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel de Senhas</title>
+</head>
+<body>
+  <h1>Gerenciador de Senhas + Autenticador</h1>
+
+  <h2>Senhas</h2>
+  <input id="nome" placeholder="Nome">
+  <input id="senha" placeholder="Senha">
+  <button onclick="addSenha()">Adicionar</button>
+  <button onclick="gerarSenha()">Gerar senha</button>
+  <ul id="lista"></ul>
+
+  <h2>Autenticador TOTP</h2>
+  <input id="totp_nome" placeholder="Nome">
+  <input id="totp_secret" placeholder="Chave Base32">
+  <button onclick="addTotp()">Adicionar</button>
+  <ul id="totps"></ul>
+
+  <script>
+    const API = 'https://SEU_BACKEND.replit.app'; // substitua com a URL do seu backend
+
+    // Verifica autenticação simples via localStorage
+    if (localStorage.getItem('autenticado') !== 'sim') {
+      window.location.href = 'index.html';
+    }
+
+    function carregar() {
+      fetch(`${API}/api/passwords`)
+        .then(r => r.json())
+        .then(data => {
+          document.getElementById('lista').innerHTML = data
+            .map(p => `<li><b>${p.name}</b>: ${p.password}</li>`)
+            .join('');
+        });
+
+      fetch(`${API}/api/totp`)
+        .then(r => r.json())
+        .then(data => {
+          document.getElementById('totps').innerHTML = data
+            .map(p => `<li><b>${p.label}</b>: ${p.code}</li>`)
+            .join('');
+        });
+    }
+
+    function addSenha() {
+      fetch(`${API}/api/passwords`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: nome.value, password: senha.value })
+      }).then(() => carregar());
+    }
+
+    function gerarSenha() {
+      fetch(`${API}/api/generate`)
+        .then(r => r.json())
+        .then(data => {
+          document.getElementById('senha').value = data.password;
+        });
+    }
+
+    function addTotp() {
+      fetch(`${API}/api/totp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          label: document.getElementById('totp_nome').value,
+          secret: document.getElementById('totp_secret').value
+        })
+      }).then(() => carregar());
+    }
+
+    setInterval(carregar, 30000); // Atualiza códigos TOTP a cada 30s
+    carregar(); // Inicial
+  </script>
+</body>
+</html>
