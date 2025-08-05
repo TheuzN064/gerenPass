@@ -1,173 +1,285 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-<style>
-  /* Reset básico */
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    background: #f5f7fa; /* cinza claro neutro */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
-    margin: 0;
-    padding: 0 20px;
-  }
-
-  h1, h2 {
-    color: #2c3e50;
-  }
-
-  input, button {
-    font-size: 1rem;
-    padding: 10px;
-    margin: 8px 4px 12px 0;
-    border: 1.8px solid #bdc3c7;
-    border-radius: 6px;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-
-  input:focus {
-    border-color: #2980b9;
-  }
-
-  button {
-    cursor: pointer;
-    background-color: #2980b9;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
-  }
-
-  button:hover {
-    background-color: #1f6391;
-  }
-
-  ul {
-    padding-left: 0;
-    list-style: none;
-  }
-
-  li {
-    background: white;
-    padding: 8px 12px;
-    margin-bottom: 6px;
-    border-radius: 6px;
-    box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
-  }
-
-  .container {
-    max-width: 600px;
-    margin: 40px auto;
-    background: white;
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 6px 16px rgb(0 0 0 / 0.1);
-  }
-
-  .input-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  .input-group input {
-    flex: 1 1 auto;
-  }
-
-  @media (max-width: 480px) {
-    .container {
-      padding: 20px;
-      margin: 20px 10px;
+  <meta charset="UTF-8" />
+  <title>Gerenciador de Senhas + Autenticador</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+    * {
+      box-sizing: border-box;
     }
-    button, input {
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #121212;
+      color: #eee;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #00bcd4;
+      text-shadow: 0 0 10px #00bcd4aa;
+    }
+    .container {
+      max-width: 720px;
       width: 100%;
-      margin: 6px 0;
+      background: #1e1e1e;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 0 25px #00bcd480;
+    }
+    section {
+      margin-bottom: 40px;
+    }
+    h2 {
+      margin-bottom: 12px;
+      font-weight: 600;
+      border-bottom: 2px solid #00bcd4;
+      padding-bottom: 4px;
     }
     .input-group {
-      flex-direction: column;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
     }
-  }
-</style>
-
-  <title>Painel de Senhas</title>
+    input {
+      flex: 1 1 150px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      background: #2a2a2a;
+      color: #eee;
+      transition: background 0.3s ease;
+    }
+    input::placeholder {
+      color: #888;
+    }
+    input:focus {
+      background: #333;
+      box-shadow: 0 0 6px #00bcd4;
+    }
+    button {
+      background: #00bcd4;
+      color: #121212;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      flex-shrink: 0;
+    }
+    button:hover {
+      background: #00acc1;
+    }
+    ul {
+      list-style: none;
+      padding-left: 0;
+      max-height: 280px;
+      overflow-y: auto;
+      border-top: 1px solid #333;
+      border-radius: 8px;
+    }
+    li {
+      background: #2a2a2a;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      box-shadow: inset 0 0 8px #000000aa;
+    }
+    li b {
+      color: #00bcd4;
+    }
+    /* Temporizador TOTP */
+    .totp-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .totp-code {
+      font-size: 1.6rem;
+      letter-spacing: 4px;
+      font-weight: 700;
+      color: #00e5ff;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #222;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: #00bcd4;
+      width: 0%;
+      transition: width 1s linear;
+    }
+    /* Scroll estilizado */
+    ul::-webkit-scrollbar {
+      width: 8px;
+    }
+    ul::-webkit-scrollbar-thumb {
+      background: #00bcd4aa;
+      border-radius: 4px;
+    }
+    /* Responsivo */
+    @media (max-width: 600px) {
+      .input-group {
+        flex-direction: column;
+      }
+      input, button {
+        width: 100%;
+        flex: none;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Gerenciador de Senhas + Autenticador</h1>
+  <div class="container">
+    <h1>Gerenciador de Senhas + Autenticador</h1>
 
-  <h2>Senhas</h2>
-  <input id="nome" placeholder="Nome">
-  <input id="senha" placeholder="Senha">
-  <button onclick="addSenha()">Adicionar</button>
-  <button onclick="gerarSenha()">Gerar senha</button>
-  <ul id="lista"></ul>
+    <section>
+      <h2>Senhas</h2>
+      <div class="input-group">
+        <input id="nome" placeholder="Nome" autocomplete="off" />
+        <input id="senha" placeholder="Senha" autocomplete="off" />
+        <button onclick="addSenha()">Adicionar</button>
+        <button onclick="gerarSenha()">Gerar senha</button>
+      </div>
+      <ul id="lista"></ul>
+    </section>
 
-  <h2>Autenticador TOTP</h2>
-  <input id="totp_nome" placeholder="Nome">
-  <input id="totp_secret" placeholder="Chave Base32">
-  <button onclick="addTotp()">Adicionar</button>
-  <ul id="totps"></ul>
+    <section>
+      <h2>Autenticador TOTP</h2>
+      <div class="input-group">
+        <input id="totp_nome" placeholder="Nome" autocomplete="off" />
+        <input id="totp_secret" placeholder="Chave Base32" autocomplete="off" />
+        <button onclick="addTotp()">Adicionar</button>
+      </div>
+      <ul id="totps"></ul>
+      <div id="totp-timer" style="margin-top: 10px; font-weight: 600; text-align: center; color:#00bcd4;">
+        Código muda em <span id="countdown">30</span>s
+      </div>
+      <div class="progress-bar" aria-label="Tempo restante do código TOTP">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+    </section>
+  </div>
 
   <script>
-    const API = 'https://32fa6e44-f525-4464-96be-52e3cdbac3bc-00-2gerkopdf1h7g.riker.replit.dev'; // substitua com a URL do seu backend
+    const API = 'https://32fa6e44-f525-4464-96be-52e3cdbac3bc-00-2gerkopdf1h7g.riker.replit.dev'; // ajuste seu backend
 
-    // Verifica autenticação simples via localStorage
     if (localStorage.getItem('autenticado') !== 'sim') {
       window.location.href = 'index.html';
     }
 
-    function carregar() {
-      fetch(`${API}/api/passwords`)
-        .then(r => r.json())
-        .then(data => {
-          document.getElementById('lista').innerHTML = data
-            .map(p => `<li><b>${p.name}</b>: ${p.password}</li>`)
-            .join('');
-        });
+    // Atualiza senhas e TOTP
+    async function carregar() {
+      try {
+        const respSenhas = await fetch(`${API}/api/passwords`);
+        const senhas = await respSenhas.json();
 
-      fetch(`${API}/api/totp`)
-        .then(r => r.json())
-        .then(data => {
-          document.getElementById('totps').innerHTML = data
-            .map(p => `<li><b>${p.label}</b>: ${p.code}</li>`)
-            .join('');
-        });
+        document.getElementById('lista').innerHTML = senhas
+          .map(p => `<li><b>${p.name}</b>: ${p.password}</li>`)
+          .join('');
+
+        const respTotp = await fetch(`${API}/api/totp`);
+        const totps = await respTotp.json();
+
+        document.getElementById('totps').innerHTML = totps
+          .map(
+            t => `
+            <li class="totp-item">
+              <div><b>${t.label}</b></div>
+              <div class="totp-code">${t.code}</div>
+            </li>`
+          )
+          .join('');
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+      }
     }
 
     function addSenha() {
+      const nome = document.getElementById('nome').value.trim();
+      const senha = document.getElementById('senha').value.trim();
+      if (!nome || !senha) {
+        alert('Preencha nome e senha!');
+        return;
+      }
       fetch(`${API}/api/passwords`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: nome.value, password: senha.value })
-      }).then(() => carregar());
+        body: JSON.stringify({ name: nome, password: senha }),
+      }).then(() => {
+        document.getElementById('nome').value = '';
+        document.getElementById('senha').value = '';
+        carregar();
+      });
     }
 
     function gerarSenha() {
       fetch(`${API}/api/generate`)
-        .then(r => r.json())
-        .then(data => {
+        .then((r) => r.json())
+        .then((data) => {
           document.getElementById('senha').value = data.password;
         });
     }
 
     function addTotp() {
+      const label = document.getElementById('totp_nome').value.trim();
+      const secret = document.getElementById('totp_secret').value.trim();
+      if (!label || !secret) {
+        alert('Preencha nome e chave base32!');
+        return;
+      }
       fetch(`${API}/api/totp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          label: document.getElementById('totp_nome').value,
-          secret: document.getElementById('totp_secret').value
-        })
-      }).then(() => carregar());
+        body: JSON.stringify({ label, secret }),
+      }).then(() => {
+        document.getElementById('totp_nome').value = '';
+        document.getElementById('totp_secret').value = '';
+        carregar();
+      });
     }
 
-    setInterval(carregar, 30000); // Atualiza códigos TOTP a cada 30s
-    carregar(); // Inicial
+    // Temporizador TOTP (códigos mudam a cada 30 segundos)
+    function startTotpTimer() {
+      const progressFill = document.getElementById('progress-fill');
+      const countdownEl = document.getElementById('countdown');
+
+      function update() {
+        const epoch = Math.floor(Date.now() / 1000);
+        const secondsPassed = epoch % 30;
+        const secondsLeft = 30 - secondsPassed;
+
+        countdownEl.textContent = secondsLeft;
+        progressFill.style.width = `${(secondsPassed / 30) * 100}%`;
+      }
+
+      update();
+      setInterval(update, 1000);
+    }
+
+    carregar();
+    startTotpTimer();
+    setInterval(carregar, 30000);
   </script>
 </body>
 </html>
