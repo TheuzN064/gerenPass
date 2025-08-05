@@ -1,127 +1,128 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <title>Login | Gerenciador de Senhas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-  /* Reset básico */
-  * {
-    box-sizing: border-box;
-  }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
-  body {
-    background: #f5f7fa; /* cinza claro neutro */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
-    margin: 0;
-    padding: 0 20px;
-  }
+    * {
+      box-sizing: border-box;
+    }
 
-  h1, h2 {
-    color: #2c3e50;
-  }
-
-  input, button {
-    font-size: 1rem;
-    padding: 10px;
-    margin: 8px 4px 12px 0;
-    border: 1.8px solid #bdc3c7;
-    border-radius: 6px;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-
-  input:focus {
-    border-color: #2980b9;
-  }
-
-  button {
-    cursor: pointer;
-    background-color: #2980b9;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
-  }
-
-  button:hover {
-    background-color: #1f6391;
-  }
-
-  ul {
-    padding-left: 0;
-    list-style: none;
-  }
-
-  li {
-    background: white;
-    padding: 8px 12px;
-    margin-bottom: 6px;
-    border-radius: 6px;
-    box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
-  }
-
-  .container {
-    max-width: 600px;
-    margin: 40px auto;
-    background: white;
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 6px 16px rgb(0 0 0 / 0.1);
-  }
-
-  .input-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  .input-group input {
-    flex: 1 1 auto;
-  }
-
-  @media (max-width: 480px) {
-    .container {
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: #121212;
+      color: #eee;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       padding: 20px;
-      margin: 20px 10px;
     }
-    button, input {
-      width: 100%;
-      margin: 6px 0;
-    }
-    .input-group {
-      flex-direction: column;
-    }
-  }
-</style>
 
-  <title>Login</title>
+    .login-container {
+      background: #1e1e1e;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 0 25px #00bcd480;
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00bcd4;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    p {
+      text-align: center;
+      font-size: 0.95rem;
+      color: #aaa;
+      margin-top: -10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 1rem;
+      background: #2a2a2a;
+      color: #eee;
+      border: none;
+      border-radius: 10px;
+      outline: none;
+      transition: background 0.3s ease;
+    }
+
+    input:focus {
+      background: #333;
+      box-shadow: 0 0 6px #00bcd4;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      background: #00bcd4;
+      color: #121212;
+      font-weight: 600;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #00acc1;
+    }
+
+    .error {
+      color: #ff5252;
+      text-align: center;
+      font-size: 0.9rem;
+      margin-top: -8px;
+    }
+
+    @media (max-width: 450px) {
+      .login-container {
+        padding: 30px 20px;
+      }
+
+      input, button {
+        font-size: 1rem;
+        padding: 12px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h2>Login</h2>
-  <input type="password" id="senha" placeholder="Digite sua senha">
-  <button onclick="logar()">Entrar</button>
+  <div class="login-container">
+    <h1>Entrar</h1>
+    <p>Acesse seu gerenciador</p>
+    <input id="senha" type="password" placeholder="Digite a senha" />
+    <div class="error" id="erroLogin" style="display: none;">Senha incorreta!</div>
+    <button onclick="logar()">Entrar</button>
+  </div>
 
   <script>
-    const API = 'https://32fa6e44-f525-4464-96be-52e3cdbac3bc-00-2gerkopdf1h7g.riker.replit.dev'; // substitua com a URL do seu backend
-
     function logar() {
-      fetch(`${API}/api/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: document.getElementById('senha').value })
-      })
-      .then(r => r.json())
-      .then(data => {
-        if (data.success) {
-          localStorage.setItem('autenticado', 'sim');
-          window.location.href = 'dashboard.html';
-        } else {
-          alert('Senha incorreta');
-        }
-      });
+      const senha = document.getElementById('senha').value;
+      const erro = document.getElementById('erroLogin');
+
+      if (senha === '14253647') {
+        localStorage.setItem('autenticado', 'sim');
+        window.location.href = 'dashboard.html';
+      } else {
+        erro.style.display = 'block';
+      }
     }
   </script>
 </body>
 </html>
-
